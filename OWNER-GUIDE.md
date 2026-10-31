@@ -2,19 +2,19 @@
 
 ## Activation status
 
-The public website currently uses its original menu and WhatsApp checkout. The admin application and database migration are prepared. **Live dashboard orders and menu editing are not active until the Supabase steps below are complete.** There are no shared default passwords or hidden admin backdoors.
+The database is installed and all 52 menu items are imported. The public website reads the shared menu from Supabase. WhatsApp checkout remains available at 01735603989 while owner activation is pending. The configuration deliberately has onlineOrders: false, and database order intake is paused.
 
-## One-time setup
+## Remaining activation
 
-1. Sign in to Supabase using an account owned by the restaurant. Create a project and store the database password securely. Choose a nearby available region and review the plan limits before enabling paid services.
-2. Run `backend.sql` once in that project's SQL Editor. It creates menu, settings, private orders, owner permissions, a photo bucket, and realtime subscriptions.
-3. In Authentication, create the owner's email/password user. Use a unique strong password. Do not enable public registration for staff accounts. Configure account recovery email and the production site URL.
-4. Run the commented owner-access SQL at the end of `backend.sql`, replacing `OWNER_EMAIL` with that user's actual email. Only trusted owner users should appear in `cafe_admins`. Additional owners can be added the same way. Signing up alone never grants admin access.
-5. Put the project's public URL and **publishable (or legacy anon) key** into `cafe-config.js`. NEVER use a secret/service-role key in website files. Keep this configuration change local until step 6 is ready.
-6. Test the configured application in staging. Sign in at `/admin.html`, import the original 52 menu items, check restaurant details, delivery fee, and ordering status. Publish the config with all application files only when the seeded database is ready. If enabling the config before seeding, disable accepting orders first and expect an empty menu until import completes.
-7. Submit a clearly labelled test order. Check the dashboard, sound, accept/preparing/ready/completed flow, price edits in both menu views, sold-out handling, and photo upload/removal. Cancel the test order afterward. Confirm that a signed-out visitor cannot read `cafe_orders` or write `cafe_menu` through the Supabase API.
+1. In Supabase Authentication > Users, create the owner's email/password user privately.
+2. Grant that specific trusted owner access using the commented SQL at the end of backend.sql, replacing OWNER_EMAIL. Signing up alone never grants admin access.
+3. Sign in at /admin.html. Check restaurant details and delivery fees. Test price edits in both menu views, sold-out controls, and photo upload/removal.
+4. Publish cafe-config.js with onlineOrders: true and enable accepting orders in Restaurant settings when staff are ready.
+5. Place a clearly labelled test order. Click Enable order alerts, verify the repeating sound and all order statuses before opening intake to customers.
 
-Do not call the system production-ready until these end-to-end checks pass against the restaurant's project. This package was syntax-checked and the unconnected website reviewed; the live database and authenticated order workflow require activation testing.
+Database validation passed: anonymous order reads and menu writes are blocked, altered prices are rejected, server totals are correct, and repeated request IDs do not duplicate orders. Tests were rolled back; zero test orders remain. Authenticated owner editing and browser alerts still require owner login and end-to-end testing. There are no default passwords or hidden backdoors.
+
+For a fresh project, run backend.sql, seed the menu through the admin import, and configure the public URL/publishable key. Never publish a secret/service-role key.
 
 ## Daily use
 

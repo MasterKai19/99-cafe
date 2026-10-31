@@ -33,6 +33,8 @@ create index cafe_orders_phone on public.cafe_orders(phone,created_at desc);
 alter table public.cafe_menu enable row level security;
 alter table public.cafe_settings enable row level security;
 alter table public.cafe_orders enable row level security;
+revoke all on public.cafe_admins,public.cafe_orders from anon,authenticated;
+revoke all on public.cafe_menu,public.cafe_settings from anon,authenticated;
 grant select on public.cafe_menu,public.cafe_settings to anon,authenticated;
 grant insert,update,delete on public.cafe_menu to authenticated;
 grant update on public.cafe_settings to authenticated;
